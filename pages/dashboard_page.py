@@ -24,27 +24,28 @@ class DashboardPage:
         # Project View All
         self.project_view_all = (
             By.XPATH,
-            "//*[@id='root']/div/div[2]/div/div/div/div[2]/div/section[2]/div/button"
+            '//*[@id="root"]/div/div[2]/div/div/div/div[2]/div/section[2]/div/button'
         )
 
         # Compose Message
         self.compose_message = (
             By.XPATH,
-            "//*[@id='root']/div/div[2]/div/div/div/div[2]/div/section[3]/button"
+            '//*[@id="root"]/div/div[2]/div/div/div/div[2]/div/section[3]/button'
         )
 
+        # Logout
         self.logout_button = (
             By.XPATH,
             '//*[@id="root"]/div/div[1]/nav/a[7]'
         )
 
-    # ----------------------------------------------------
+    # ==================================================
     # Open Dashboard
-    # ----------------------------------------------------
+    # ==================================================
 
     def open_dashboard(self):
 
-        dashboard = WebDriverWait(self.driver,20).until(
+        dashboard = WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable(self.dashboard_menu)
         )
 
@@ -53,17 +54,17 @@ class DashboardPage:
             dashboard
         )
 
-        WebDriverWait(self.driver,20).until(
-            lambda d: "dashboard" in d.current_url
+        WebDriverWait(self.driver, 20).until(
+            EC.url_contains("dashboard")
         )
 
-    # ----------------------------------------------------
+    # ==================================================
     # Attendance View All
-    # ----------------------------------------------------
+    # ==================================================
 
     def open_attendance_page(self):
 
-        button = WebDriverWait(self.driver,20).until(
+        button = WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located(
                 self.attendance_view_all
             )
@@ -74,7 +75,7 @@ class DashboardPage:
             button
         )
 
-        WebDriverWait(self.driver,10).until(
+        WebDriverWait(self.driver, 10).until(
             EC.element_to_be_clickable(
                 self.attendance_view_all
             )
@@ -85,13 +86,13 @@ class DashboardPage:
             button
         )
 
-    # ----------------------------------------------------
+    # ==================================================
     # Project View All
-    # ----------------------------------------------------
+    # ==================================================
 
     def open_project_page(self):
 
-        button = WebDriverWait(self.driver,20).until(
+        button = WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located(
                 self.project_view_all
             )
@@ -102,18 +103,24 @@ class DashboardPage:
             button
         )
 
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(
+                self.project_view_all
+            )
+        )
+
         self.driver.execute_script(
             "arguments[0].click();",
             button
         )
 
-    # ----------------------------------------------------
+    # ==================================================
     # Compose Message
-    # ----------------------------------------------------
+    # ==================================================
 
     def open_compose_message(self):
 
-        button = WebDriverWait(self.driver,20).until(
+        button = WebDriverWait(self.driver, 20).until(
             EC.presence_of_element_located(
                 self.compose_message
             )
@@ -124,20 +131,35 @@ class DashboardPage:
             button
         )
 
+        WebDriverWait(self.driver, 10).until(
+            EC.element_to_be_clickable(
+                self.compose_message
+            )
+        )
+
         self.driver.execute_script(
             "arguments[0].click();",
             button
         )
 
+    # ==================================================
+    # Dashboard Validation
+    # ==================================================
 
     def is_dashboard_displayed(self):
+
         WebDriverWait(self.driver, 20).until(
             EC.url_contains("dashboard")
         )
 
         return "dashboard" in self.driver.current_url.lower()
 
+    # ==================================================
+    # Logout
+    # ==================================================
+
     def click_logout(self):
+
         logout = WebDriverWait(self.driver, 20).until(
             EC.element_to_be_clickable(
                 self.logout_button
@@ -158,8 +180,4 @@ class DashboardPage:
             EC.url_contains("login")
         )
 
-<<<<<<< HEAD
         print("Logout Successful")
-=======
-        print("Logout Successful")
->>>>>>> dba01bf3daaa1927d91b2b84ee9979d3dc677922
