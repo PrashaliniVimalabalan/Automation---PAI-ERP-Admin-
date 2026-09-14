@@ -56,10 +56,14 @@ class DashboardPage:
             '//*[@id="root"]/div/div[2]/div/div/div/div[2]/div/section[3]/button'
         )
 
+<<<<<<< HEAD
         # ==================================================
         # Logout
         # ==================================================
 
+=======
+        # Logout
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
         self.logout_button = (
             By.XPATH,
             '//*[@id="root"]/div/div[1]/nav/a[7]'
@@ -72,9 +76,13 @@ class DashboardPage:
     def open_dashboard(self):
 
         dashboard = WebDriverWait(self.driver, 20).until(
+<<<<<<< HEAD
             EC.element_to_be_clickable(
                 self.dashboard_menu
             )
+=======
+            EC.element_to_be_clickable(self.dashboard_menu)
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
         )
 
         self.driver.execute_script(
@@ -86,6 +94,7 @@ class DashboardPage:
             EC.url_contains("dashboard")
         )
 
+<<<<<<< HEAD
         time.sleep(2)
 
     # ==================================================
@@ -114,6 +123,8 @@ class DashboardPage:
 
         time.sleep(2)
 
+=======
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
     # ==================================================
     # Attendance View All
     # ==================================================
@@ -142,8 +153,11 @@ class DashboardPage:
             button
         )
 
+<<<<<<< HEAD
         time.sleep(2)
 
+=======
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
     # ==================================================
     # Project View All
     # ==================================================
@@ -172,8 +186,11 @@ class DashboardPage:
             button
         )
 
+<<<<<<< HEAD
         time.sleep(2)
 
+=======
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
     # ==================================================
     # Compose Message
     # ==================================================
@@ -202,8 +219,11 @@ class DashboardPage:
             button
         )
 
+<<<<<<< HEAD
         time.sleep(2)
 
+=======
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
     # ==================================================
     # Dashboard Validation
     # ==================================================
@@ -217,6 +237,7 @@ class DashboardPage:
         return "dashboard" in self.driver.current_url.lower()
 
     # ==================================================
+<<<<<<< HEAD
     # Notification Validation
     # ==================================================
 
@@ -231,6 +252,8 @@ class DashboardPage:
         return notification.is_displayed()
 
     # ==================================================
+=======
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
     # Logout
     # ==================================================
 
@@ -258,4 +281,8 @@ class DashboardPage:
             EC.url_contains("login")
         )
 
+<<<<<<< HEAD
         print("Logout Successful")
+=======
+        print("Logout Successful")
+>>>>>>> fd03d99c3ad54c6d837b6c52e62a87125b0acbfa
