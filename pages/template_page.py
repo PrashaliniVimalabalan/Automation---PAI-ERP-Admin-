@@ -1,9 +1,10 @@
+import time
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import Select
 from datetime import datetime
-import time
 
 
 class TemplatePage:
@@ -11,19 +12,20 @@ class TemplatePage:
     def __init__(self, driver):
 
         self.driver = driver
+        self.wait = WebDriverWait(driver, 20)
 
-        # ==========================
+        # ==========================================================
         # TEMPLATE MENU
-        # ==========================
+        # ==========================================================
 
         self.template_menu = (
             By.XPATH,
             '//*[@id="root"]/div/div[1]/nav/a[5]/span'
         )
 
-        # ==========================
+        # ==========================================================
         # OFFER LETTER
-        # ==========================
+        # ==========================================================
 
         self.name_input = (
             By.XPATH,
@@ -80,9 +82,20 @@ class TemplatePage:
             '//*[@id="root"]/div/div[2]/div/div/div[3]/div/form/div[2]/button[2]'
         )
 
-        # ==========================
-        # SERVICE LETTER
-        # ==========================
+        # Offer Letter buttons
+        self.clear_button = (
+            By.XPATH,
+            '//*[@id="root"]/div/div[2]/div/div/div[3]/div/form/div[2]/button[1]'
+        )
+
+        self.save_button = (
+            By.XPATH,
+            '//*[@id="root"]/div/div[2]/div/div/div[3]/div/form/div[2]/button[3]'
+        )
+
+        # ==========================================================
+        # SERVICE LETTER TAB
+        # ==========================================================
 
         self.service_letter_tab = (
             By.XPATH,
@@ -134,34 +147,93 @@ class TemplatePage:
             '//*[@id="root"]/div/div[2]/div/div/div[3]/div/form/div[3]/button[1]'
         )
 
-    def open_template_page(self):
-        template = WebDriverWait(self.driver, 20).until(
-            ec.element_to_be_clickable(self.template_menu)
+        # ==========================================================
+        # GENERIC PREVIEW ACTIONS
+        # ==========================================================
+
+        self.download_button = (
+            By.XPATH,
+            "//button[contains(normalize-space(),'Download')]"
         )
 
-        template.click()
+        self.email_button = (
+            By.XPATH,
+            "//button[contains(normalize-space(),'Email')]"
+        )
+
+        # ==========================================================
+        # SERVICE LETTER SAVE
+        # ==========================================================
+
+        self.service_save_button = (
+            By.XPATH,
+            '//*[@id="root"]/div/div[2]/div/div/div[3]/div/form/div[3]/button[2]'
+        )
+
+    # ==============================================================
+    # COMMON CLICK
+    # ==============================================================
+
+    def click_element(self, locator):
+
+        element = self.wait.until(
+            ec.presence_of_element_located(locator)
+        )
+
+        self.driver.execute_script(
+            "arguments[0].scrollIntoView({block:'center'});",
+            element
+        )
+
+        time.sleep(1)
+
+        self.wait.until(
+            ec.element_to_be_clickable(locator)
+        )
+
+        self.driver.execute_script(
+            "arguments[0].click();",
+            element
+        )
 
         time.sleep(2)
 
-        self.driver.execute_script("window.scrollTo(0,0)")
+    # ==============================================================
+    # OPEN TEMPLATE
+    # ==============================================================
+
+    def open_template_page(self):
+
+        self.click_element(
+            self.template_menu
+        )
+
+        time.sleep(2)
+
+    # ==============================================================
+    # OFFER LETTER
+    # ==============================================================
 
     def fill_template_details(
-            self,
-            name,
-            email,
-            address,
-            role,
-            joining_date,
-            ending_date,
-            department,
-            manager,
-            manager_email
+        self,
+        name,
+        email,
+        address,
+        role,
+        joining_date,
+        ending_date,
+        department,
+        manager,
+        manager_email
     ):
+
         today = datetime.now().strftime("%d/%m/%Y")
 
         # Name
-        name_field = WebDriverWait(self.driver, 20).until(
-            ec.visibility_of_element_located(self.name_input)
+        name_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.name_input
+            )
         )
 
         self.driver.execute_script(
@@ -172,37 +244,65 @@ class TemplatePage:
         name_field.clear()
         name_field.send_keys(name)
 
-        # Email
-        email_field = self.driver.find_element(*self.employee_email_input)
+        # Employee Email
+        email_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.employee_email_input
+            )
+        )
+
         email_field.clear()
         email_field.send_keys(email)
 
         # Address
-        address_field = self.driver.find_element(*self.address_input)
+        address_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.address_input
+            )
+        )
+
         address_field.clear()
         address_field.send_keys(address)
 
         # Date
-        date_field = self.driver.find_element(*self.date_input)
+        date_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.date_input
+            )
+        )
+
         date_field.clear()
         date_field.send_keys(today)
 
         # Role
         Select(
-            self.driver.find_element(*self.role_dropdown)
+            self.wait.until(
+                ec.presence_of_element_located(
+                    self.role_dropdown
+                )
+            )
         ).select_by_visible_text(role)
 
         # Joining Date
-        joining = self.driver.find_element(*self.joining_date_input)
+        joining = self.wait.until(
+            ec.visibility_of_element_located(
+                self.joining_date_input
+            )
+        )
+
         joining.clear()
         joining.send_keys(joining_date)
 
         # Ending Date
-        ending = self.driver.find_element(*self.ending_date_input)
+        ending = self.wait.until(
+            ec.visibility_of_element_located(
+                self.ending_date_input
+            )
+        )
+
         ending.clear()
         ending.send_keys(ending_date)
 
-        # Scroll to bottom fields
         self.driver.execute_script(
             "window.scrollBy(0,350);"
         )
@@ -210,7 +310,7 @@ class TemplatePage:
         time.sleep(1)
 
         # Department
-        department_field = WebDriverWait(self.driver, 20).until(
+        department_field = self.wait.until(
             ec.visibility_of_element_located(
                 self.department_input
             )
@@ -219,17 +319,21 @@ class TemplatePage:
         department_field.clear()
         department_field.send_keys(department)
 
-        # Reporting Manager
-        manager_field = self.driver.find_element(
-            *self.reporting_manager_input
+        # Manager
+        manager_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.reporting_manager_input
+            )
         )
 
         manager_field.clear()
         manager_field.send_keys(manager)
 
         # Manager Email
-        manager_email_field = self.driver.find_element(
-            *self.reporting_manager_email_input
+        manager_email_field = self.wait.until(
+            ec.visibility_of_element_located(
+                self.reporting_manager_email_input
+            )
         )
 
         manager_email_field.clear()
@@ -237,64 +341,75 @@ class TemplatePage:
 
         time.sleep(2)
 
+    # ==============================================================
+    # OFFER PREVIEW
+    # ==============================================================
+
     def click_preview(self):
-        preview = WebDriverWait(self.driver, 20).until(
-            ec.element_to_be_clickable(
-                self.preview_button
-            )
+
+        self.click_element(
+            self.preview_button
         )
 
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block:'center'});",
-            preview
+        print(
+            "Offer Letter Preview Opened"
         )
-
-        time.sleep(1)
-
-        self.driver.execute_script(
-            "arguments[0].click();",
-            preview
-        )
-
-        print("Offer Letter Preview Opened")
 
         time.sleep(5)
 
-    def open_service_letter(self):
-        service = WebDriverWait(self.driver, 20).until(
-            ec.element_to_be_clickable(
-                self.service_letter_tab
-            )
+    # ==============================================================
+    # OFFER CLEAR
+    # ==============================================================
+
+    def click_clear(self):
+
+        self.click_element(
+            self.clear_button
         )
 
-        self.driver.execute_script(
-            "arguments[0].click();",
-            service
+        time.sleep(2)
+
+    # ==============================================================
+    # OFFER SAVE
+    # ==============================================================
+
+    def click_save(self):
+
+        self.click_element(
+            self.save_button
+        )
+
+        time.sleep(3)
+
+    # ==============================================================
+    # SERVICE LETTER
+    # ==============================================================
+
+    def open_service_letter(self):
+
+        self.click_element(
+            self.service_letter_tab
         )
 
         time.sleep(2)
 
     def fill_service_letter(
-            self,
-            name,
-            designation,
-            role,
-            ending_date,
-            joining_date,
-            achievement
+        self,
+        name,
+        designation,
+        role,
+        ending_date,
+        joining_date,
+        achievement
     ):
+
         today = datetime.now().strftime("%d/%m/%Y")
 
         # Name
-        name_field = WebDriverWait(self.driver, 20).until(
+        name_field = self.wait.until(
             ec.visibility_of_element_located(
                 self.service_name
             )
-        )
-
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block:'center'});",
-            name_field
         )
 
         name_field.clear()
@@ -302,65 +417,66 @@ class TemplatePage:
 
         # Designation
         Select(
-            self.driver.find_element(
-                *self.service_designation
+            self.wait.until(
+                ec.presence_of_element_located(
+                    self.service_designation
+                )
             )
         ).select_by_visible_text(designation)
 
         # Role
         Select(
-            self.driver.find_element(
-                *self.service_role
+            self.wait.until(
+                ec.presence_of_element_located(
+                    self.service_role
+                )
             )
         ).select_by_visible_text(role)
 
         # Current Date
-        date = self.driver.find_element(
-            *self.service_date
+        date = self.wait.until(
+            ec.visibility_of_element_located(
+                self.service_date
+            )
         )
 
         date.clear()
         date.send_keys(today)
 
         # End Date
-        end = self.driver.find_element(
-            *self.service_end_date
+        end = self.wait.until(
+            ec.visibility_of_element_located(
+                self.service_end_date
+            )
         )
 
         end.clear()
         end.send_keys(ending_date)
 
-        # Join Date
-        join = self.driver.find_element(
-            *self.service_join_date
+        # Joining Date
+        join = self.wait.until(
+            ec.visibility_of_element_located(
+                self.service_join_date
+            )
         )
 
         join.clear()
         join.send_keys(joining_date)
 
-        # Scroll Down
         self.driver.execute_script(
-            "window.scrollBy(0,400)"
+            "window.scrollBy(0,400);"
         )
 
         time.sleep(1)
 
-        # Add Achievement
-        add = WebDriverWait(self.driver, 20).until(
-            ec.element_to_be_clickable(
-                self.add_achievement
-            )
-        )
-
-        self.driver.execute_script(
-            "arguments[0].click();",
-            add
+        # Add first achievement
+        self.click_element(
+            self.add_achievement
         )
 
         time.sleep(1)
 
-        # Achievement Text
-        achievement_box = WebDriverWait(self.driver, 20).until(
+        achievement_box = self.wait.until(
             ec.visibility_of_element_located(
                 self.achievement_textbox
             )
@@ -371,25 +487,81 @@ class TemplatePage:
 
         time.sleep(2)
 
+    # ==============================================================
+    # ADD MULTIPLE ACHIEVEMENTS
+    # ==============================================================
+
+    def add_achievement_field(self):
+
+        self.click_element(
+            self.add_achievement
+        )
+
+        time.sleep(2)
+
+    def get_achievement_fields(self):
+
+        return self.driver.find_elements(
+            By.XPATH,
+            "//input"
+        )
+
+    # ==============================================================
+    # SERVICE PREVIEW
+    # ==============================================================
+
     def click_service_preview(self):
-        preview = WebDriverWait(self.driver, 20).until(
-            ec.element_to_be_clickable(
-                self.service_preview
-            )
+
+        self.click_element(
+            self.service_preview
         )
 
-        self.driver.execute_script(
-            "arguments[0].scrollIntoView({block:'center'});",
-            preview
+        print(
+            "Service Letter Preview Opened"
         )
-
-        time.sleep(1)
-
-        self.driver.execute_script(
-            "arguments[0].click();",
-            preview
-        )
-
-        print("Service Letter Preview Opened")
 
         time.sleep(5)
+
+    # ==============================================================
+    # DOWNLOAD
+    # ==============================================================
+
+    def click_download(self):
+
+        self.click_element(
+            self.download_button
+        )
+
+        time.sleep(4)
+
+        print(
+            "Download button clicked"
+        )
+
+    # ==============================================================
+    # EMAIL
+    # ==============================================================
+
+    def click_email(self):
+
+        self.click_element(
+            self.email_button
+        )
+
+        time.sleep(5)
+
+        print(
+            "Email button clicked"
+        )
+
+    # ==============================================================
+    # SERVICE SAVE
+    # ==============================================================
+
+    def click_service_save(self):
+
+        self.click_element(
+            self.service_save_button
+        )
+
+        time.sleep(3)

@@ -35,6 +35,32 @@ def test_dashboard():
     dashboard_page.open_compose_message()
     time.sleep(3)
 
+def test_notification_open(driver):
+    login_page = LoginPage(driver)
+    dashboard_page = DashboardPage(driver)
+
+    # Open Login Page
+    login_page.open_url()
+
+    # Login
+    login_page.login(
+            "ADMIN001",
+            "Admin@123"
+        )
+
+    time.sleep(3)
+
+        # Verify Dashboard
+    assert dashboard_page.is_dashboard_displayed()
+
+        # Verify Notification icon
+    assert dashboard_page.is_notification_icon_displayed()
+
+        # Open Notification
+    dashboard_page.open_notifications()
+
+    print("Notification opened successfully")
+
     print("Dashboard Tested Successfully")
 
     driver.quit()

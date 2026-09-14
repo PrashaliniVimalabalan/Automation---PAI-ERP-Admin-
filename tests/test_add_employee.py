@@ -30,14 +30,14 @@ def test_add_employee():
     # =========================
 
     add_employee_page.fill_personal_information(
-        " Nilaksan",
+        "Laksan",
         "Male",
         "27-02-2000",
         "+94 77 9458933",
         "Kandy",
-        "Nilaksan2@gmail.com",
+        "laksan2@gmail.com",
         "Nilak#4534",
-        "Nilaksank"
+        "laksank"
     )
     add_employee_page.click_create_button()
 
